@@ -1,6 +1,9 @@
 defmodule MemeTest do
   use ExUnit.Case
+
   import Meme
+  import ExUnit.CaptureLog
+
   doctest Meme
 
   @ttl 1000
@@ -15,6 +18,14 @@ defmodule MemeTest do
     assert result == __MODULE__.rand_public(@randlimit)
     _ = :timer.sleep(@ttl * 2)
     assert result != __MODULE__.rand_public(@randlimit)
+  end
+
+  test "get the value from cache" do
+    __MODULE__.rand_public(@randlimit)
+
+    assert capture_log(fn ->
+             __MODULE__.rand_public(@randlimit)
+           end) =~ "cached_value"
   end
 
   defmemo rand_public_when(limit) when is_integer(limit) and limit > 0, timeout: @ttl do

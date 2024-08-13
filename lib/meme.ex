@@ -179,6 +179,8 @@ defmodule Meme do
           value
 
         {:ok, {:exists, value}} ->
+          require Logger
+          Logger.warning("cached_value: #{inspect(value)}")
           value
       end
     end
